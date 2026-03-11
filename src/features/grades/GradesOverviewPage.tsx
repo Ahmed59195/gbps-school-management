@@ -5,7 +5,7 @@ import { useClasses, useTeacherClasses } from '../../hooks/useClasses'
 import { useSubjects, useCurrentTerm } from '../../hooks/useGrades'
 import { Button } from '../../components/ui/Button'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
-import { Badge } from '../../components/ui/Badge'
+import { Badge, type BadgeVariant } from '../../components/ui/Badge'
 
 export function GradesOverviewPage() {
   const { profile } = useAuth()
@@ -186,7 +186,7 @@ export function GradesOverviewPage() {
                 key={item.grade}
                 className="text-center p-3 bg-gray-50 rounded-lg"
               >
-                <Badge variant={item.color as any} className="mb-2">
+                <Badge variant={item.color as BadgeVariant} className="mb-2">
                   {item.grade}
                 </Badge>
                 <p className="text-xs text-gray-500">{item.range}</p>

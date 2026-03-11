@@ -68,7 +68,7 @@ export function HomeworkListPage() {
       await deleteHomework.mutateAsync(deleteModal.id)
       showToast('Homework deleted successfully', 'success')
       setDeleteModal({ isOpen: false, id: '', title: '' })
-    } catch (err) {
+    } catch {
       showToast('Failed to delete homework', 'error')
     }
   }

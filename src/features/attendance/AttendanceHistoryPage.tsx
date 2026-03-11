@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Calendar, Filter } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
@@ -20,6 +20,11 @@ import {
   TableEmpty,
 } from '../../components/ui/Table'
 import { AttendanceBadge } from '../../components/ui/Badge'
+import type { Class, Attendance } from '../../lib/types'
+
+interface AttendanceRecord extends Attendance {
+  student: { id: string; name: string; class_id: string }
+}
 
 export function AttendanceHistoryPage() {
   const navigate = useNavigate()
@@ -35,13 +40,19 @@ export function AttendanceHistoryPage() {
     ? allClasses
     : teacherClasses?.map((tc) => tc.classes).filter(Boolean)
 
+  const initialDates = useRef(() => {
+    const now = new Date()
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    return {
+      start: thirtyDaysAgo.toISOString().split('T')[0],
+      end: now.toISOString().split('T')[0],
+    }
+  })
+  const dates = useMemo(() => initialDates.current(), [])
+
   const [selectedClass, setSelectedClass] = useState('')
-  const [startDate, setStartDate] = useState(
-    new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-  )
-  const [endDate, setEndDate] = useState(
-    new Date().toISOString().split('T')[0]
-  )
+  const [startDate, setStartDate] = useState(dates.start)
+  const [endDate, setEndDate] = useState(dates.end)
 
   // Fetch attendance history
   const { data: attendanceData, isLoading } = useQuery({
@@ -67,17 +78,18 @@ export function AttendanceHistoryPage() {
   })
 
   // Group attendance by date
-  const groupedAttendance = attendanceData?.reduce((acc, record: any) => {
-    const date = record.date
+  const groupedAttendance: Record<string, AttendanceRecord[]> | undefined = attendanceData?.reduce<Record<string, AttendanceRecord[]>>((acc, record) => {
+    const typedRecord = record as AttendanceRecord
+    const date = typedRecord.date
     if (!acc[date]) {
       acc[date] = []
     }
-    acc[date].push(record)
+    acc[date].push(typedRecord)
     return acc
-  }, {} as Record<string, any[]>)
+  }, {})
 
   const classOptions =
-    availableClasses?.map((c: any) => ({
+    availableClasses?.map((c: Class) => ({
       value: c.id,
       label: c.name,
     })) || []
@@ -140,7 +152,7 @@ export function AttendanceHistoryPage() {
       {selectedClass ? (
         groupedAttendance && Object.keys(groupedAttendance).length > 0 ? (
           <div className="space-y-4">
-            {(Object.entries(groupedAttendance) as [string, any[]][]).map(([date, records]) => {
+            {Object.entries(groupedAttendance).map(([date, records]) => {
               const stats = {
                 present: records.filter((r) => r.status === 'present').length,
                 absent: records.filter((r) => r.status === 'absent').length,

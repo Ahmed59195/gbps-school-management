@@ -10,7 +10,8 @@ import { Button } from '../../components/ui/Button'
 import { Select } from '../../components/ui/Select'
 import { Input } from '../../components/ui/Input'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
-import { Badge } from '../../components/ui/Badge'
+import { Badge, type BadgeVariant } from '../../components/ui/Badge'
+import type { Class } from '../../lib/types'
 
 interface StudentGrade {
   studentId: string
@@ -121,13 +122,13 @@ export function EnterGradesPage() {
       await upsertGrades.mutateAsync(gradesToSave)
       showToast('Grades saved successfully', 'success')
       navigate('/grades')
-    } catch (err) {
+    } catch {
       showToast('Failed to save grades', 'error')
     }
   }
 
   const classOptions =
-    availableClasses?.map((c: any) => ({
+    availableClasses?.map((c: Class) => ({
       value: c.id,
       label: c.name,
     })) || []
@@ -154,7 +155,7 @@ export function EnterGradesPage() {
     return 'F'
   }
 
-  const getGradeColor = (grade: string): string => {
+  const getGradeColor = (grade: string): BadgeVariant => {
     switch (grade) {
       case 'A+':
       case 'A':
@@ -282,7 +283,7 @@ export function EnterGradesPage() {
                             <span className="text-gray-500">/ {maxMarks}</span>
                           </div>
                           {gradeLetter && (
-                            <Badge variant={getGradeColor(gradeLetter) as any}>
+                            <Badge variant={getGradeColor(gradeLetter)}>
                               {gradeLetter}
                             </Badge>
                           )}

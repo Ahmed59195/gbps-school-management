@@ -25,12 +25,6 @@ export function EditTimetablePage() {
   const { profile } = useAuth()
   const { showToast } = useToast()
 
-  // Only headmaster can edit
-  if (profile?.role !== 'headmaster') {
-    navigate('/timetable')
-    return null
-  }
-
   const { data: allClasses } = useClasses()
   const { data: subjects } = useSubjects()
   const { data: teachers } = useTeachers()
@@ -39,6 +33,15 @@ export function EditTimetablePage() {
 
   const [selectedClassId, setSelectedClassId] = useState(classId || '')
   const [timetableState, setTimetableState] = useState<TimetableState>({})
+
+  const isHeadmaster = profile?.role === 'headmaster'
+
+  // Only headmaster can edit - redirect after hooks
+  useEffect(() => {
+    if (!isHeadmaster) {
+      navigate('/timetable')
+    }
+  }, [isHeadmaster, navigate])
 
   // Initialize state from existing timetable
   useEffect(() => {
@@ -61,6 +64,11 @@ export function EditTimetablePage() {
       navigate(`/timetable/${selectedClassId}/edit`, { replace: true })
     }
   }, [selectedClassId, classId, navigate])
+
+  // Show nothing while checking authorization
+  if (!isHeadmaster) {
+    return null
+  }
 
   const getCellKey = (dayIndex: number, startTime: string) =>
     `${dayIndex}-${startTime}`
@@ -95,7 +103,7 @@ export function EditTimetablePage() {
     }
 
     const entries = Object.entries(timetableState)
-      .filter(([_, data]) => data.subject_id && data.teacher_id)
+      .filter(([, data]) => data.subject_id && data.teacher_id)
       .map(([key, data]) => {
         const [dayOfWeek, startTime] = key.split('-')
         const period = PERIODS.find((p) => p.start === startTime)
@@ -113,7 +121,7 @@ export function EditTimetablePage() {
       await bulkUpsert.mutateAsync({ classId: selectedClassId, entries })
       showToast('Timetable saved successfully', 'success')
       navigate('/timetable')
-    } catch (err) {
+    } catch {
       showToast('Failed to save timetable', 'error')
     }
   }

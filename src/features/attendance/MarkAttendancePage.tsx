@@ -11,6 +11,7 @@ import { Select } from '../../components/ui/Select'
 import { Input } from '../../components/ui/Input'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
+import type { Class } from '../../lib/types'
 
 type AttendanceStatus = 'present' | 'absent' | 'late'
 
@@ -87,13 +88,13 @@ export function MarkAttendancePage() {
       await markAttendance.mutateAsync(records)
       showToast('Attendance marked successfully', 'success')
       navigate('/attendance')
-    } catch (err) {
+    } catch {
       showToast('Failed to mark attendance', 'error')
     }
   }
 
   const classOptions =
-    availableClasses?.map((c: any) => ({
+    availableClasses?.map((c: Class) => ({
       value: c.id,
       label: c.name,
     })) || []

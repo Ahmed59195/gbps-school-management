@@ -29,7 +29,7 @@ export function AnnouncementsListPage() {
       await deleteAnnouncement.mutateAsync(deleteModal.id)
       showToast('Announcement deleted successfully', 'success')
       setDeleteModal({ isOpen: false, id: '', title: '' })
-    } catch (err) {
+    } catch {
       showToast('Failed to delete announcement', 'error')
     }
   }
@@ -123,7 +123,7 @@ export function AnnouncementsListPage() {
                     <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
-                        <Badge variant={getRoleBadgeVariant(announcement.target_role) as any}>
+                        <Badge variant={getRoleBadgeVariant(announcement.target_role) as 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info'}>
                           {getRoleLabel(announcement.target_role)}
                         </Badge>
                       </div>

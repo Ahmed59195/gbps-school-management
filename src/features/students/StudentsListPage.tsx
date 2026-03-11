@@ -47,7 +47,7 @@ export function StudentsListPage() {
       await deleteStudent.mutateAsync(deleteModal.studentId)
       showToast('Student deleted successfully', 'success')
       setDeleteModal({ isOpen: false, studentId: '', studentName: '' })
-    } catch (err) {
+    } catch {
       showToast('Failed to delete student', 'error')
     }
   }

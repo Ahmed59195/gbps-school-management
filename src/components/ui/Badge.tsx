@@ -1,7 +1,7 @@
 import { type HTMLAttributes, type ReactNode } from 'react'
 import { cn } from '../../lib/utils'
 
-type BadgeVariant =
+export type BadgeVariant =
   | 'default'
   | 'primary'
   | 'secondary'

@@ -86,7 +86,7 @@ export function StudentFormPage() {
         showToast('Student created successfully', 'success')
       }
       navigate('/students')
-    } catch (err) {
+    } catch {
       showToast(
         isEditing ? 'Failed to update student' : 'Failed to create student',
         'error'

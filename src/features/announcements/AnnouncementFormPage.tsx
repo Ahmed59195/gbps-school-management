@@ -75,7 +75,7 @@ export function AnnouncementFormPage() {
         showToast('Announcement created successfully', 'success')
       }
       navigate('/announcements')
-    } catch (err) {
+    } catch {
       showToast(
         isEditing ? 'Failed to update announcement' : 'Failed to create announcement',
         'error'

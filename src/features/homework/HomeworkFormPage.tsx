@@ -14,6 +14,7 @@ import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { Card, CardHeader, CardContent } from '../../components/ui/Card'
 import { SkeletonCard } from '../../components/ui/Skeleton'
+import type { Class } from '../../lib/types'
 
 const homeworkSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -97,7 +98,7 @@ export function HomeworkFormPage() {
         showToast('Homework created successfully', 'success')
       }
       navigate('/homework')
-    } catch (err) {
+    } catch {
       showToast(
         isEditing ? 'Failed to update homework' : 'Failed to create homework',
         'error'
@@ -106,7 +107,7 @@ export function HomeworkFormPage() {
   }
 
   const classOptions =
-    availableClasses?.map((c: any) => ({
+    availableClasses?.map((c: Class) => ({
       value: c.id,
       label: c.name,
     })) || []

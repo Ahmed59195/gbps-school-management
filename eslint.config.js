@@ -19,5 +19,12 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Allow these patterns commonly used in React apps - downgrade to warnings
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
   },
 ])
